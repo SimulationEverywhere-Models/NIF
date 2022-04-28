@@ -1,0 +1,296 @@
+
+
+
+
+
+Account:
+state variables:
+phase={active, passive};
+Time receiving_time; //the time duration  
+accountNO=0;// the number of accounts
+bool processing; //the tag of processing
+S = {phase, accountNO,processing}
+X = {account_setting, plus_in, minus_in}
+Y = {accountNO_out}
+¦Äext (phase, accountNO, processing, x)
+{
+  if ( x is from account_setting)
+  {
+  case (phase)
+  {
+  passive:
+    { phase=active; ta(phase)=sigma; processing=true;}
+  active:
+    { phase=passive; ta(phase)=INFINITY; processing=false;}
+  }
+   if ( x is from plus_in==1)
+   { accountNO++; phase=active; ta(phase)=receiving_time;}
+   if ( x is from minus_in==1)
+    {accountNO--; phase=acive; ta(phase)=receiving_time;}  
+ }
+  
+¦Äint (s)
+{
+	if (processing)
+	{phase=active; ta (phase)=receiving_time; }
+	else 
+	{ accountNO=0; passivate();}
+}
+
+¦Ë(s)
+{
+	if (!processing)
+	sendOutput(accountNO_out,accountNO);  //after all input read in, output the accountNO.
+}
+
+***************************************************************************
+	Refresh:
+phase={active, passive};
+Time receiving_time; //the time duration  
+refreshtime=5;// the time period integer, will be transferred into Time class in the next atomic model
+bool processing; //the tag of processing
+S = {phase, refreshtime,processing}
+X = {refresh_setting, plus_in, minus_in}
+Y = {refresh_out}
+¦Äext (phase, refreshtime, processing, x)
+{
+  if ( x is from refresh_setting)
+  {
+  case (phase)
+  {
+  passive:
+    { phase=active; ta(phase)=receiving_time; processing=true;}
+  active:
+    { phase=passive; ta(phase)=INFINITY; processing=false;}
+  }
+   if ( x is from plus_in==1)
+   { refreshtime++; phase=active; ta(phase)=receiving_time;}
+   if ( x is from minus_in==1)
+    {refreshtime--; phase=active; ta(phase)=receiving_time;}  
+ }
+  
+¦Äint (s)
+{
+	if (processing)
+	{phase=active; ta(phase)=receiving_time; }
+	else 
+	{ refreshtime=5; passivate();}
+}
+
+¦Ë(s)
+{
+	if (!processing)
+	sendOutput(refresh_out,refreshtime);  //after all input read in, output the refreshtime.
+}
+
+
+***************************************************************************
+Data Generation:
+state variables:
+phase={active,passive};
+N4=4;N3=3;N2=2;N1=1;  //output values for all accounts
+Time receiving_time;
+Time periodtime;
+bool sending;
+int accountNO;
+S = {phase, sending, N1, N2, N3, N4,LT}
+X = {accountNO_in, LT_in}
+Y = {data1_out,data2_out,data3_out,data4_out}
+
+¦Äext(phase,N1,N1,N3,N4,sigma,x,e):
+{
+if ( x is from LT_in)
+{ sending=true; 
+  LT=LT_in.value();
+  periodtime=Time(0,0,LT,0);
+  phase=active; ta(phase)=receiving_time;
+ }
+if (x is from accountNO_in and sending==true)
+{
+accountNO=accountNO_in.value();
+sending=false;
+phase=active; ta(phase)=receiving_time;
+}
+}
+
+¦Äint(s)
+{ 
+	if (sending)
+	{ phase=active; ta(phase)=periodtime;}
+	else
+	{  accountNO=0; passivate();}
+}
+
+¦Ë(s):
+{
+if (!sending)
+{
+    case (accountNO)
+    4:  //four account ports have output data
+    	{sendOutput(data_out,N4);
+        sendOutput(data_out,N3);
+        sendOutput(data_out,N2);
+        sendOutput(data_out,N1);}
+    3:
+       {sendOutput(data_out,N3);
+        sendOutput(data_out,N2);
+        sendOutput(data_out,N1);}
+    2:
+      { sendOutput(data_out,N2);
+        sendOutput(data_out,N1);}
+    1:   //only one account port has output data
+    	{sendOutput(data_out,N1);}
+
+}
+}
+
+***************************************************************************
+Filter:
+<S, X, Y, ¦Äint, ¦Äext, ¦Ë, ta>
+state variables:
+phase={active,passive};
+bit1=bit2=bit3=bit4=0; //initialize the input bits to 0
+Time receiving_time;
+bool sending1, sending2, sending3, sending4;
+bool processing;
+S = {phase, bit1,bit2,bit3,bit4, processing}
+X={bit1_in,bit2_in,bit3_in,bit4_in, choice_in}
+Y={bit_out}
+¦Äext(phase,bit1,bit2,bit3,bit4, processing, x)
+{
+ if (x is from bit1_in)
+ { bit1=bit1_in.value(); processing=true; phase=active; ta(phase)=receiving_time;}
+ if (x is from bit2_in)
+ { bit2=bit2_in.value(); processing=true; phase=active; ta(phase)=receiving_time;}
+ if (x is from bit3_in)
+ { bit3=bit3_in.value(); processing=true; phase=active; ta(phase)=receiving_time;}
+ if (x is from bit4_in)
+ { bit4=bit4_in.value(); processing=true; phase=active; ta(phase)=receiving_time;}
+ 
+ if (x is from choice_in )&& (phase==active)
+ {
+ if (choice_in.value()==4) sending4=true;
+ if (choice_in.value()==3) sending3=true;
+ if (choice_in.value()==2) sending2=true;
+ if (choice_in.value()==1) sending1=true;
+ phase=active; ta(phase)=receiving_time;
+ }
+}
+
+¦Äint (s)
+{ 
+if (processing) 
+{ phase=active; ta(phase)=preparationTime; }
+else { sending1=sending2=sending3=sending4=false;
+bit1=bit2=bit3=bit4=0; passivate();}
+
+¦Ë (s)
+{
+if (!processing)
+{
+if (sending4) sendoutput(bit_out,bit4);
+if (sending3) sendoutput(bit_out,bit3);
+if (sending2) sendoutput(bit_out,bit2);
+if (sending1) sendoutput(bit_out,bit1);
+}
+}
+
+
+
+***************************************************************************
+Write:
+<S, X, Y, ¦Äint, ¦Äext, ¦Ë, ta>
+state variables:
+phase={active,passive};
+int choice;
+int bit;
+Time preparationtime;
+S = {phase, bit,choice}
+X={choice_in}
+Y={write_out}
+
+¦Äext(phase,bit,choice,e,x)
+{
+if ( x is from choice_in )&& (phase==passive)
+  {
+  choice=choice_in.value();
+  if (choice==4) bit=4;
+  if (choice==3) bit=3;
+  if (choice==2) bit=2;
+  if (choice==1) bit=1;
+  
+  phase=active; ta(phase)=preparationtime;
+  }
+}
+  
+
+¦Äint (s)
+{   bit=0; passivate();}
+
+¦Ë (s)
+{ sendOutput(write_out,bit);}
+
+***************************************************************************
+Display:
+<S, X, Y, ¦Äint, ¦Äext, ¦Ë, ta>
+state variables:
+phase={active, passive};
+int bit1_display, bit2_display;
+Time receiving_time;
+bool get_filter, get_write;
+S={phase,bit1_display, bit2_display, get_filter, get_write}
+X={filter_in,write_in}
+Y={display_out}
+
+¦Äext(s,e,x)
+{
+if ( x is from filter_in)
+  { bit1_display=filter_in.value();
+    get_filter=true;
+    phase=active; ta(phase)=receiving_time;
+  }
+if ( x is from write_in)
+  { bit2_display=write_in.value();
+    get_write=true;
+    phase=active; ta(phase)=receiving_time;
+  } 
+}
+
+¦Äint(s)
+{
+	get_filter=get_write=false;
+	passivate();
+}
+
+¦Ë(s)
+{
+	if (filter_in)
+	sendOutput(write_out,filter_in);
+	if (write_in)
+	sendOutput(write_out,write_in);
+}
+
+
+data processing:
+X = {channel_choice, bit_in};
+	Y = {display_out};
+	D = {filter, write, display};
+	I(filter) = {self};
+	I(write) = {self};
+I (display)={self};
+	Z(filter) = self; Z(write) = self; Z(display)=self;
+	SELECT:	({filter, write, display}) = filter;
+
+NIF tool:
+	X = {account_setting,refresh_setting,plus_in, minus_in, channel_choice};
+	Y = {data_out};
+	D = {settings, data generation, data processing};
+	I(settings) = {data generation, self};
+	I(data generation) = {settings, data processing};
+	I(data processing) = {data generation, self};
+	Z(settings) = data generation; Z(settings) = self;
+	Z(data generation) = settings; Z(data generation) = data processing;
+	Z(data processing) = data generation; Z(data processing)=self;
+	SELECT:	({ settings,data generation, data processing}) = settings;
+				({data generation, data processing}) = data generation;
+

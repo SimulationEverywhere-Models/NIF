@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDPlusPlus_Builder_Version_1.0.0>
+  <top>
+    <components> filter@Filter&#xd;</components>
+    <out> bit_out &#xd;</out>
+    <in> choice_in&#xd;</in>
+    <in> bit1_in &#xd;</in>
+    <in> bit2_in&#xd;</in>
+    <in> bit3_in&#xd;</in>
+    <in> bit4_in&#xd;</in>
+    <Link> bit1_in bit1_in@filter &#xd;</Link>
+    <Link> bit2_in bit2_in@filter &#xd;</Link>
+    <Link> bit3_in bit3_in@filter &#xd;</Link>
+    <Link> bit4_in bit4_in@filter &#xd;</Link>
+    <Link> choice_in choice_in@filter &#xd;</Link>
+    <Link> bit_out@filter bit_out &#xd;</Link>
+  </top>
+  <filter>
+    <preparation> 00:00:10:000&#xd;</preparation>
+    <timeout> 00:00:20:000 &#xd;</timeout>
+  </filter>
+</CDPlusPlus_Builder_Version_1.0.0>

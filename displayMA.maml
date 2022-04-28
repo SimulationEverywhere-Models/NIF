@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDPlusPlus_Builder_Version_1.0.0>
+  <top>
+    <components> display@Display&#xd;</components>
+    <out> display_out &#xd;</out>
+    <in> filter_in write_in&#xd;</in>
+    <Link> filter_in filter_in@display&#xd;</Link>
+    <Link> write_in write_in@display &#xd;</Link>
+    <Link> display_out@display display_out   &#xd;</Link>
+  </top>
+</CDPlusPlus_Builder_Version_1.0.0>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDPlusPlus_Builder_Version_1.0.0>
+  <top>
+    <components> account@Account&#xd;</components>
+    <out> accountNO_out &#xd;</out>
+    <in> account_setting &#xd;</in>
+    <in> plus_in&#xd;</in>
+    <in> minus_in&#xd;</in>
+    <Link> account_setting account_setting@account&#xd;</Link>
+    <Link> plus_in plus_in@account&#xd;</Link>
+    <Link> minus_in minus_in@account&#xd;</Link>
+    <Link> accountNO_out@account accountNO_out &#xd;</Link>
+  </top>
+  <account>
+    <preparation> 00:00:10:000&#xd;</preparation>
+    <timeout> 00:00:20:000 &#xd;</timeout>
+  </account>
+</CDPlusPlus_Builder_Version_1.0.0>

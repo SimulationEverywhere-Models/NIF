@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDPlusPlus_Builder_Version_1.0.0>
+  <top>
+    <components> refresh@Refresh&#xd;</components>
+    <out> refresh_out &#xd;</out>
+    <in> refresh_setting &#xd;</in>
+    <in> plus_in &#xd;</in>
+    <in> minus_in&#xd;</in>
+    <Link> refresh_setting refresh_setting@refresh&#xd;</Link>
+    <Link> plus_in plus_in@refresh&#xd;</Link>
+    <Link> minus_in minus_in@refresh&#xd;</Link>
+    <Link> refresh_out@refresh refresh_out &#xd;</Link>
+  </top>
+</CDPlusPlus_Builder_Version_1.0.0>

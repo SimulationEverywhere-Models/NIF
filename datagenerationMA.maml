@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDPlusPlus_Builder_Version_1.0.0>
+  <top>
+    <components> datageneration@Datageneration&#xd;</components>
+    <out> data1_out &#xd;</out>
+    <out> data2_out&#xd;</out>
+    <out> data3_out&#xd;</out>
+    <out> data4_out&#xd;</out>
+    <in> accountNO_in &#xd;</in>
+    <in> LT_in&#xd;</in>
+    <Link> accountNO_in accountNO_in@datageneration&#xd;</Link>
+    <Link> LT_in LT_in@datageneration&#xd;</Link>
+    <Link> data1_out@datageneration data1_out &#xd;</Link>
+    <Link> data2_out@datageneration data2_out&#xd;</Link>
+    <Link> data3_out@datageneration data3_out&#xd;</Link>
+    <Link> data4_out@datageneration data4_out&#xd;</Link>
+  </top>
+  <datageneration>
+    <preparation> 00:00:10:000&#xd;</preparation>
+    <timeout> 00:00:20:000 &#xd;</timeout>
+  </datageneration>
+</CDPlusPlus_Builder_Version_1.0.0>
